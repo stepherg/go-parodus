@@ -19,7 +19,7 @@ package main
 import (
 	"context"
 	"github.com/go-kit/kit/log"
-	"github.com/xmidt-org/kratos"
+	"github.com/stepherg/kratos"
 	"github.com/xmidt-org/webpa-common/logging"
 	"go.uber.org/fx"
 	"time"
