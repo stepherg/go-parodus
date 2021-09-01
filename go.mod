@@ -7,7 +7,6 @@ require (
 	github.com/rs/xid v1.3.0
 	github.com/spf13/pflag v1.0.5
 	github.com/stepherg/kratos v0.2.3
-	github.com/xmidt-org/go-parodus v0.2.0
 	github.com/xmidt-org/themis v0.4.7
 	github.com/xmidt-org/webpa-common v1.11.9
 	github.com/xmidt-org/wrp-go/v3 v3.0.2

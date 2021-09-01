@@ -19,7 +19,7 @@ package main
 import (
 	"context"
 	"github.com/go-kit/kit/log"
-	libparodus "github.com/xmidt-org/go-parodus/client"
+	libparodus "github.com/stepherg/go-parodus/client"
 	"github.com/stepherg/kratos"
 	"github.com/xmidt-org/webpa-common/logging"
 	"github.com/xmidt-org/wrp-go/v3"
@@ -135,7 +135,7 @@ func (p *Parodus) msgHandler(wrpBus chan wrp.Message) {
 					}
 				}
 			default:
-				logging.Error(p.logger).Log(logging.MessageKey(), "Unexpected WRP Message. Please file an issue at github.com/xmidt-org/go-parodus/issues", "wrp", msg)
+				logging.Error(p.logger).Log(logging.MessageKey(), "Unexpected WRP Message. Please file an issue at github.com/stepherg/go-parodus/issues", "wrp", msg)
 			}
 		}
 	}

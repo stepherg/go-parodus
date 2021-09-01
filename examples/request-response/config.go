@@ -21,7 +21,7 @@ import (
 	"fmt"
 	"github.com/go-kit/kit/log"
 	"github.com/spf13/pflag"
-	"github.com/xmidt-org/go-parodus/client"
+	"github.com/stepherg/go-parodus/client"
 	"github.com/stepherg/kratos"
 	"github.com/xmidt-org/webpa-common/logging"
 	"github.com/xmidt-org/wrp-go/v3"

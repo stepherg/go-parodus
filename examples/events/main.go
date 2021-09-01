@@ -19,7 +19,7 @@ package main
 import (
 	"fmt"
 	"github.com/spf13/pflag"
-	"github.com/xmidt-org/go-parodus/client"
+	"github.com/stepherg/go-parodus/client"
 	"github.com/xmidt-org/themis/config"
 	"github.com/xmidt-org/themis/xlog"
 	"go.uber.org/fx"
