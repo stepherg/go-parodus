@@ -56,7 +56,7 @@ func CreateServiceForwarder(name string, url string, logger log.Logger) (*Forwar
 		stopTicker: quit,
 		logger:     log.WithPrefix(logger, "forwarder", name),
 	}
-	ticker := time.NewTicker(5 * time.Second)
+	ticker := time.NewTicker(30 * time.Second)
 	message := &wrp.Message{Type: wrp.ServiceAliveMessageType}
 	go func() {
 		for {

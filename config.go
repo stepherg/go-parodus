@@ -36,22 +36,23 @@ const (
 	HardwareLastRebootReasonKeyName = "hw-last-reboot-reason"
 	FirmwareNameKeyName             = "fw-name"
 	BootTimeKeyName                 = "boot-time"
-
-	PingTimeoutKeyName = "xmidt-ping-timeout"
-	URLKeyName         = "xmidt-url"
-	MaxBackoffKeyName  = "xmidt-backoff-max"
-	InterfaceKeyName   = "xmidt-interface-used"
-	ProtocolKeyName    = ""
-	UUIDKeyName        = ""
-	LocalURLKeyName    = "parodus-local-url"
-	PartnerIDKeyName   = "partner-id"
-	CertPathKeyName    = "ssl-cert-path"
-	AuthTokenKeyName   = ""
-	IPv4KeyName        = "force-ipv4"
-	IPv6KeyName        = "force-ipv6"
-
-	DebugKeyName   = "debug"
-	VersionKeyName = "version"
+	PingTimeoutKeyName              = "webpa-ping-timeout"
+	URLKeyName                      = "webpa-url"
+	MaxBackoffKeyName               = "webpa-backoff-max"
+	InterfaceKeyName                = "webpa-interface-used"
+	ProtocolKeyName                 = ""
+	UUIDKeyName                     = ""
+	LocalURLKeyName                 = "parodus-local-url"
+	PartnerIDKeyName                = "partner-id"
+	CertPathKeyName                 = "ssl-cert-path"
+	AuthTokenUrlKeyName             = "token-server-url"
+	IPv4KeyName                     = "force-ipv4"
+	IPv6KeyName                     = "force-ipv6"
+	DebugKeyName                    = "debug"
+	VersionKeyName                  = "version"
+	ClientCertKeyName               = "client-cert-path"
+	MtlsClientKeyKeyName            = "mtls-client-key-path"
+	MtlsClientCertKeyName           = "mtls-client-cert-path"
 )
 
 const (
@@ -67,15 +68,19 @@ func SetupFlagSet(fs *pflag.FlagSet) error {
 	fs.StringP(HardwareLastRebootReasonKeyName, "r", "", "the last known reboot reason")
 	fs.StringP(FirmwareNameKeyName, "n", "", "firmware name and version currently running")
 	fs.Int64P(BootTimeKeyName, "b", time.Now().Unix(), "the boot time in unix time")
-	fs.StringP(URLKeyName, "u", "", "the hardware model name")
+	fs.StringP(URLKeyName, "u", "", "the petasos host")
 	fs.IntP(MaxBackoffKeyName, "o", 60, "the maximum value in seconds for the backoff algorithm")
-	fs.IntP(PingTimeoutKeyName, "t", 60, "the maximum time to wait between pings before assuming the upstream is broken")
+	fs.IntP(PingTimeoutKeyName, "t", 120, "the maximum time to wait between pings before assuming the upstream is broken")
 	fs.StringP(InterfaceKeyName, "i", "eth0", "the device interface being used to connect to the cloud")
 	fs.StringP(LocalURLKeyName, "l", "tcp://127.0.0.1:6666", "Parodus local server url")
 	fs.StringP(PartnerIDKeyName, "p", "", "partner ID of iot/gateway device")
 	fs.StringP(CertPathKeyName, "c", "", "provide the certs for establishing secure upstream")
 	fs.BoolP(IPv4KeyName, "4", false, "forcefully connect parodus to ipv4 address")
 	fs.BoolP(IPv6KeyName, "6", false, "forcefully connect parodus to ipv6 address")
+	fs.StringP(AuthTokenUrlKeyName, "U", "", "the themis host")
+	fs.StringP(ClientCertKeyName, "P", "", "Client cert path")
+	fs.StringP(MtlsClientKeyKeyName, "K", "files/v1.simulator.dev.synamedia.erdkcloud.com.key", "mTLS client key path")
+	fs.StringP(MtlsClientCertKeyName, "M", "files/v1.simulator.dev.synamedia.erdkcloud.com.crt", "mTLS client cert path")
 
 	fs.BoolP(DebugKeyName, "", false, "enables debug logging")
 	fs.BoolP(VersionKeyName, "v", false, "print version and exit")
@@ -99,13 +104,15 @@ type Config struct {
 	LocalURL                 string
 	PartnerID                string
 	CertPath                 string
-	AuthToken                string
+	AuthTokenURL             string
 	DeviceID                 string
 	IPv4                     bool
 	IPv6                     bool
-
-	Debug        bool
-	PrintVersion bool
+	Debug                    bool
+	PrintVersion             bool
+	ClientCertPath           string
+	MtlsClientKeyPath        string
+	MtlsClientCertPath       string
 }
 
 type ConfigFlagIn struct {
@@ -141,6 +148,12 @@ func Provide(in ConfigFlagIn) (Config, error) {
 
 	config.Debug, _ = in.FlagSet.GetBool(DebugKeyName)
 	config.PrintVersion, _ = in.FlagSet.GetBool(VersionKeyName)
+
+	config.AuthTokenURL, _ = in.FlagSet.GetString(AuthTokenUrlKeyName)
+	config.ClientCertPath, _ = in.FlagSet.GetString(ClientCertKeyName)
+	config.MtlsClientKeyPath, _ = in.FlagSet.GetString(MtlsClientKeyKeyName)
+	config.MtlsClientCertPath, _ = in.FlagSet.GetString(MtlsClientCertKeyName)
+
 	if config.PrintVersion {
 		in.PrintVersionFunc()
 	}

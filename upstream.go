@@ -31,6 +31,16 @@ func StartUpstreamConnection(config Config, lc fx.Lifecycle, logger log.Logger) 
 		Size:       100,
 	}
 
+	tlsConfig, err := getTLSConfig(config.MtlsClientCertPath, config.MtlsClientKeyPath)
+	if err != nil {
+		logging.Error(logger).Log(logging.MessageKey(), "Failed to load mTLS config.")
+	}
+
+	token, err := getThemisToken(config, tlsConfig, logger)
+	if err != nil {
+		logging.Error(logger).Log(logging.MessageKey(), "Failed to get themis token.")
+	}
+
 	client, err := kratos.NewClient(kratos.ClientConfig{
 		DeviceName:           config.DeviceID,
 		FirmwareName:         config.FirmwareName,
@@ -42,6 +52,8 @@ func StartUpstreamConnection(config Config, lc fx.Lifecycle, logger log.Logger) 
 		WRPDecoderQueue:      queueConfig,
 		HandlerRegistryQueue: queueConfig,
 		HandleMsgQueue:       queueConfig,
+		TlsConfig:            tlsConfig,
+		Token:                token,
 		Handlers:             []kratos.HandlerConfig{},
 		HandlePingMiss: func() error {
 			logging.Error(logger).Log(logging.MessageKey(), "Ping Miss")

@@ -16,7 +16,16 @@
 
 package main
 
-import "regexp"
+import (
+	"crypto/tls"
+	"regexp"
+	"net/http"
+	"fmt"
+	"github.com/xmidt-org/webpa-common/logging"
+	"github.com/rs/xid"
+	"io/ioutil"
+	"github.com/go-kit/kit/log"
+)
 
 func validateMAC(mac string) bool {
 	var (
@@ -33,3 +42,52 @@ func validateMAC(mac string) bool {
 
 	return false
 }
+
+func getTLSConfig(mtlsCert string, mtlsKey string) (*tls.Config, error) {
+
+	cert, err := tls.LoadX509KeyPair(mtlsCert, mtlsKey)
+	if err != nil {
+		return nil, err
+	}
+	return &tls.Config{
+		Certificates: []tls.Certificate{cert},
+	}, nil
+}
+
+func getThemisToken(config Config, tlsConfig *tls.Config, logger log.Logger) (token string, err error) {
+
+	client := &http.Client{
+		Transport: &http.Transport{
+			TLSClientConfig: tlsConfig,
+		},
+		CheckRedirect: func(req *http.Request, via []*http.Request) error {
+			return http.ErrUseLastResponse
+		},
+	}
+	req, _ := http.NewRequest("GET", config.AuthTokenURL, nil)
+	req.Header.Set("X-Midt-Mac-Address", fmt.Sprintf("mac:%s", config.HardwareMAC))
+	req.Header.Set("X-Midt-Serial-Number", config.HardwareSerialNumber)
+	uuid := xid.New()
+	req.Header.Set("X-Midt-Uuid", uuid.String())
+
+	req.Header.Set("X-Midt-Partner-Id", config.PartnerID)
+	req.Header.Set("X-Midt-Hardware-Model", config.HardwareModel)
+	req.Header.Set("X-Midt-Hardware-Manufacturer", config.HardwareManufacturer)
+	req.Header.Set("X-Midt-Firmware-Name", config.FirmwareName)
+	req.Header.Set("X-Midt-Protocol", config.Protocol)
+	req.Header.Set("X-Midt-Interface-Used", config.Interface)
+	req.Header.Set("X-Midt-Last-Reboot-Reason", config.HardwareLastRebootReason)
+
+	resp, err := client.Do(req)
+	if err != nil {
+		logging.Error(logger).Log(logging.MessageKey(), "Failed to get themis token.")
+		return "", err
+	}
+	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		logging.Error(logger).Log(logging.MessageKey(), "Failed to read themis http response.")
+	}
+	token = string(bodyBytes)
+	return token, err
+}
+
