@@ -31,6 +31,8 @@ func StartUpstreamConnection(config Config, lc fx.Lifecycle, logger log.Logger) 
 		Size:       100,
 	}
 
+	waitForNetwork(config.URL)
+
 	tlsConfig, err := getTLSConfig(config.MtlsClientCertPath, config.MtlsClientKeyPath)
 	if err != nil {
 		logging.Error(logger).Log(logging.MessageKey(), "Failed to load mTLS config.")

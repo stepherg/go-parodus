@@ -18,13 +18,17 @@ package main
 
 import (
 	"crypto/tls"
-	"regexp"
-	"net/http"
 	"fmt"
-	"github.com/xmidt-org/webpa-common/logging"
-	"github.com/rs/xid"
 	"io/ioutil"
+	"net"
+	"net/http"
+	"net/url"
+	"regexp"
+	"time"
+
 	"github.com/go-kit/kit/log"
+	"github.com/rs/xid"
+	"github.com/xmidt-org/webpa-common/logging"
 )
 
 func validateMAC(mac string) bool {
@@ -91,3 +95,20 @@ func getThemisToken(config Config, tlsConfig *tls.Config, logger log.Logger) (to
 	return token, err
 }
 
+func waitForNetwork(URL string) {
+
+	u, _ := url.Parse(URL)
+	host, _, _ := net.SplitHostPort(u.Host)
+	if host == "" {
+		host = u.Host
+	}
+
+	for {
+		addrs, err := net.LookupHost(host)
+		_ = addrs
+		if err == nil {
+			break
+		}
+		time.Sleep(2 * time.Second)
+	}
+}
