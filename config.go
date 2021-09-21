@@ -61,12 +61,12 @@ const (
 
 func SetupFlagSet(fs *pflag.FlagSet) error {
 	// Mark Device Info
-	fs.StringP(HardwareModelKeyName, "m", "RPI-RDKV", "the hardware model name")
-	fs.StringP(HardwareSerialNumberKeyName, "s", "10000000589bfdab", "the serial number")
+	fs.StringP(HardwareModelKeyName, "m", "RPI-RDKB", "the hardware model name")
+	fs.StringP(HardwareSerialNumberKeyName, "s", "0000000000000000", "the serial number")
 	fs.StringP(HardwareManufacturerKeyName, "f", "Raspberry", "the device manufacturer")
-	fs.StringP(HardwareMACKeyName, "d", "dc:a6:32:aa:f0:38", "the MAC address used to manage the device")
+	fs.StringP(HardwareMACKeyName, "d", "11:22:33:44:55:66", "the MAC address used to manage the device")
 	fs.StringP(HardwareLastRebootReasonKeyName, "r", "unknown", "the last known reboot reason")
-	fs.StringP(FirmwareNameKeyName, "n", "lineage_rpi4", "firmware name and version currently running")
+	fs.StringP(FirmwareNameKeyName, "n", "unknown", "firmware name and version currently running")
 	fs.Int64P(BootTimeKeyName, "b", time.Now().Unix(), "the boot time in unix time")
 	fs.StringP(URLKeyName, "u", "https://petasos-v2.dev1-dev.erdkcloud.com:6400", "the petasos host")
 	fs.IntP(MaxBackoffKeyName, "o", 60, "the maximum value in seconds for the backoff algorithm")
