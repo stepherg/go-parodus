@@ -18,10 +18,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/spf13/pflag"
-	"go.uber.org/fx"
 	"strings"
 	"time"
+
+	"github.com/spf13/pflag"
+	"go.uber.org/fx"
 )
 
 const (
@@ -68,7 +69,7 @@ func SetupFlagSet(fs *pflag.FlagSet) error {
 	fs.StringP(HardwareLastRebootReasonKeyName, "r", "unknown", "the last known reboot reason")
 	fs.StringP(FirmwareNameKeyName, "n", "unknown", "firmware name and version currently running")
 	fs.Int64P(BootTimeKeyName, "b", time.Now().Unix(), "the boot time in unix time")
-	fs.StringP(URLKeyName, "u", "https://petasos-v2.dev1-dev.erdkcloud.com:6400", "the petasos host")
+	fs.StringP(URLKeyName, "u", "https://petasos:6400", "the petasos host")
 	fs.IntP(MaxBackoffKeyName, "o", 60, "the maximum value in seconds for the backoff algorithm")
 	fs.IntP(PingTimeoutKeyName, "t", 180, "the maximum time to wait between pings before assuming the upstream is broken")
 	fs.StringP(InterfaceKeyName, "i", "eth0", "the device interface being used to connect to the cloud")
@@ -77,10 +78,10 @@ func SetupFlagSet(fs *pflag.FlagSet) error {
 	fs.StringP(CertPathKeyName, "c", "", "provide the certs for establishing secure upstream")
 	fs.BoolP(IPv4KeyName, "4", false, "forcefully connect parodus to ipv4 address")
 	fs.BoolP(IPv6KeyName, "6", false, "forcefully connect parodus to ipv6 address")
-	fs.StringP(AuthTokenUrlKeyName, "U", "https://themis-v2.dev1-dev.erdkcloud.com:6501/issue", "the themis host")
+	fs.StringP(AuthTokenUrlKeyName, "U", "https://themis:6501/issue", "the themis host")
 	fs.StringP(ClientCertKeyName, "P", "", "Client cert path")
-	fs.StringP(MtlsClientKeyKeyName, "K", "files/v1.simulator.dev.synamedia.erdkcloud.com.key", "mTLS client key path")
-	fs.StringP(MtlsClientCertKeyName, "M", "files/v1.simulator.dev.synamedia.erdkcloud.com.crt", "mTLS client cert path")
+	fs.StringP(MtlsClientKeyKeyName, "K", "", "mTLS client key path")
+	fs.StringP(MtlsClientCertKeyName, "M", "", "mTLS client cert path")
 
 	fs.BoolP(DebugKeyName, "", false, "enables debug logging")
 	fs.BoolP(VersionKeyName, "v", false, "print version and exit")
